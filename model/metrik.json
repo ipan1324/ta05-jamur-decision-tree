@@ -1,0 +1,279 @@
+{
+  "n_total": 8124,
+  "n_latih": 5686,
+  "n_uji": 2438,
+  "kelas": {
+    "e": 4208,
+    "p": 3916
+  },
+  "stalk_root_hilang": 2480,
+  "modus_stalk_root": "b",
+  "gini_awal": 0.49935405449893955,
+  "gini_top5": {
+    "odor": 0.0285,
+    "spore-print-color": 0.2165,
+    "gill-color": 0.2679,
+    "ring-type": 0.3176,
+    "stalk-surface-above-ring": 0.3267
+  },
+  "model_a": {
+    "acc_train": 1.0,
+    "acc_test": 1.0,
+    "cm": [
+      [
+        1263,
+        0
+      ],
+      [
+        0,
+        1175
+      ]
+    ],
+    "depth": 6,
+    "leaves": 13
+  },
+  "model_b": {
+    "acc_train": 0.9998241294407316,
+    "acc_test": 0.9987694831829368,
+    "cm": [
+      [
+        1263,
+        0
+      ],
+      [
+        3,
+        1172
+      ]
+    ],
+    "depth": 4,
+    "leaves": 11
+  },
+  "cv_a": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "cv_b": [
+    1.0,
+    0.9944615384615385,
+    1.0,
+    0.9987692307692307,
+    0.999384236453202
+  ],
+  "sapuan_kedalaman": {
+    "max_depth": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "akurasi_latih": [
+      0.8881,
+      0.9483,
+      0.9875,
+      0.9998,
+      0.9998,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "akurasi_uji": [
+      0.8835,
+      0.9418,
+      0.9848,
+      0.9988,
+      0.9988,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "importance": {
+    "odor": 0.6666981495941929,
+    "stalk-root": 0.2593439562244123,
+    "spore-print-color": 0.036887948535254345,
+    "ring-type": 0.014829215776519775,
+    "stalk-surface-below-ring": 0.014147571298238416,
+    "population": 0.0059829283191086755,
+    "cap-surface": 0.0021102302522734368
+  },
+  "aturan_b": [
+    {
+      "syarat": [
+        "Bau ≠ Tidak berbau",
+        "Pangkal batang = Membulat",
+        "Bau ≠ Almond",
+        "Bau ≠ Adas manis"
+      ],
+      "prediksi": 1,
+      "sampel": 2459,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau = Tidak berbau",
+        "Warna cetakan spora ≠ Hijau",
+        "Permukaan batang bawah cincin ≠ Bersisik",
+        "Permukaan tudung ≠ Beralur"
+      ],
+      "prediksi": 0,
+      "sampel": 2386,
+      "kemurnian": 0.9995808885163453
+    },
+    {
+      "syarat": [
+        "Bau ≠ Tidak berbau",
+        "Pangkal batang ≠ Membulat",
+        "Pangkal batang ≠ Rata",
+        "Tipe cincin ≠ Tidak ada"
+      ],
+      "prediksi": 0,
+      "sampel": 481,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau ≠ Tidak berbau",
+        "Pangkal batang ≠ Membulat",
+        "Pangkal batang = Rata"
+      ],
+      "prediksi": 1,
+      "sampel": 172,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau = Tidak berbau",
+        "Warna cetakan spora = Hijau"
+      ],
+      "prediksi": 1,
+      "sampel": 55,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau ≠ Tidak berbau",
+        "Pangkal batang = Membulat",
+        "Bau = Almond"
+      ],
+      "prediksi": 0,
+      "sampel": 34,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau ≠ Tidak berbau",
+        "Pangkal batang = Membulat",
+        "Bau ≠ Almond",
+        "Bau = Adas manis"
+      ],
+      "prediksi": 0,
+      "sampel": 33,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau = Tidak berbau",
+        "Warna cetakan spora ≠ Hijau",
+        "Permukaan batang bawah cincin = Bersisik",
+        "Populasi ≠ Soliter"
+      ],
+      "prediksi": 1,
+      "sampel": 29,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau ≠ Tidak berbau",
+        "Pangkal batang ≠ Membulat",
+        "Pangkal batang ≠ Rata",
+        "Tipe cincin = Tidak ada"
+      ],
+      "prediksi": 1,
+      "sampel": 22,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau = Tidak berbau",
+        "Warna cetakan spora ≠ Hijau",
+        "Permukaan batang bawah cincin = Bersisik",
+        "Populasi = Soliter"
+      ],
+      "prediksi": 0,
+      "sampel": 12,
+      "kemurnian": 1.0
+    },
+    {
+      "syarat": [
+        "Bau = Tidak berbau",
+        "Warna cetakan spora ≠ Hijau",
+        "Permukaan batang bawah cincin ≠ Bersisik",
+        "Permukaan tudung = Beralur"
+      ],
+      "prediksi": 1,
+      "sampel": 3,
+      "kemurnian": 1.0
+    }
+  ],
+  "report_b": {
+    "Bisa dimakan": {
+      "precision": 0.9976303317535545,
+      "recall": 1.0,
+      "f1-score": 0.9988137603795967,
+      "support": 1263.0
+    },
+    "Beracun": {
+      "precision": 1.0,
+      "recall": 0.9974468085106383,
+      "f1-score": 0.9987217724755006,
+      "support": 1175.0
+    },
+    "accuracy": 0.9987694831829368,
+    "macro avg": {
+      "precision": 0.9988151658767772,
+      "recall": 0.9987234042553191,
+      "f1-score": 0.9987677664275487,
+      "support": 2438.0
+    },
+    "weighted avg": {
+      "precision": 0.9987723990995651,
+      "recall": 0.9987694831829368,
+      "f1-score": 0.9987694265866055,
+      "support": 2438.0
+    }
+  },
+  "report_a": {
+    "Bisa dimakan": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1263.0
+    },
+    "Beracun": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1175.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2438.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2438.0
+    }
+  }
+}

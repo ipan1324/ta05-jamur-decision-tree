@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="id" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Klasifikasi Jamur dengan Decision Tree</title>
+  <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+  <style>
+    :root { --biru:#3987e5; --oranye:#eb6834; }
+    body { background:#0f1115; }
+    .navbar-brand small { color:#9aa0aa; font-weight:400; }
+    .kartu { background:#171a21; border:1px solid #262b36; border-radius:14px; }
+    .kartu h2 { font-size:.95rem; letter-spacing:.02em; color:#c3c8d2; }
+    .form-label { font-size:.8rem; color:#9aa0aa; margin-bottom:.2rem; }
+    .form-select { background-color:#0f1115; border-color:#2c3240; font-size:.9rem; }
+    .form-select:focus { border-color:var(--biru); box-shadow:0 0 0 .2rem rgba(57,135,229,.25); }
+    .hasil { border-radius:14px; padding:1.25rem; }
+    .hasil.beracun { background:rgba(235,104,52,.12); border:1px solid var(--oranye); }
+    .hasil.aman { background:rgba(57,135,229,.12); border:1px solid var(--biru); }
+    .hasil .judul { font-size:1.9rem; font-weight:700; line-height:1.1; }
+    .beracun .judul { color:var(--oranye); } .aman .judul { color:var(--biru); }
+    .jalur li { margin-bottom:.35rem; font-size:.9rem; }
+    .jalur li::marker { color:#6b7280; }
+    .sticky-panel { position:sticky; top:1rem; }
+    .bar { height:10px; border-radius:6px; background:#262b36; overflow:hidden; display:flex; }
+    .bar > span { display:block; height:100%; }
+  </style>
+</head>
+<body>
+<nav class="navbar border-bottom" style="border-color:#262b36 !important">
+  <div class="container">
+    <span class="navbar-brand mb-0 h1 fs-5">Klasifikasi Jamur <small class="ms-2">Decision Tree &middot; TA-05 Pembelajaran Mesin</small></span>
+    <span class="badge text-bg-secondary">{{ nama_model }}</span>
+  </div>
+</nav>
+
+<main class="container py-4">
+  <div class="row g-4">
+    <!-- Formulir -->
+    <div class="col-lg-8">
+      <form method="post" action="/predict" id="form-jamur">
+        <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+          <span class="text-secondary small me-1">Isi cepat dengan contoh nyata:</span>
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="isi(CONTOH.aman)">Contoh bisa dimakan</button>
+          <button type="button" class="btn btn-sm btn-outline-warning" onclick="isi(CONTOH.beracun)">Contoh beracun</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="kosongkan()">Kosongkan</button>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger py-2 small">
+          <strong>Formulir belum lengkap:</strong>
+          <ul class="mb-0">{% for e in error[:6] %}<li>{{ e }}</li>{% endfor %}{% if error|length > 6 %}<li>dan {{ error|length - 6 }} kolom lain.</li>{% endif %}</ul>
+        </div>
+        {% endif %}
+
+        {% for grup, fitur_list in kelompok %}
+        <section class="kartu p-3 mb-3">
+          <h2 class="text-uppercase mb-3">{{ grup }}</h2>
+          <div class="row g-3">
+            {% for f, judul, opsi in fitur_list %}
+            <div class="col-md-6">
+              <label class="form-label" for="f-{{ f }}">{{ judul }}</label>
+              <select class="form-select" id="f-{{ f }}" name="{{ f }}" required>
+                <option value="" disabled {% if not nilai.get(f) %}selected{% endif %}>Pilih...</option>
+                {% for kode, label in opsi %}
+                <option value="{{ kode }}" {% if nilai.get(f) == kode %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+        {% endfor %}
+
+        <button class="btn btn-primary btn-lg w-100" type="submit">Klasifikasikan jamur</button>
+      </form>
+    </div>
+
+    <!-- Hasil -->
+    <div class="col-lg-4">
+      <div class="sticky-panel">
+        {% if hasil %}
+        <div class="hasil {{ 'beracun' if hasil.kelas == 'p' else 'aman' }} mb-3" id="hasil" role="status">
+          <div class="text-uppercase small text-secondary mb-1">Hasil klasifikasi</div>
+          <div class="judul">{{ '⚠ ' if hasil.kelas == 'p' else '✓ ' }}{{ hasil.label|upper }}</div>
+          <div class="mt-3 small text-secondary">Peluang menurut model</div>
+          <div class="bar mt-1" aria-hidden="true">
+            <span style="width:{{ (hasil.peluang_aman*100)|round(1) }}%; background:var(--biru)"></span>
+            <span style="width:{{ (hasil.peluang_beracun*100)|round(1) }}%; background:var(--oranye)"></span>
+          </div>
+          <div class="d-flex justify-content-between small mt-1">
+            <span style="color:var(--biru)">Bisa dimakan {{ (hasil.peluang_aman*100)|round(1)|string|replace('.', ',') }}%</span>
+            <span style="color:var(--oranye)">Beracun {{ (hasil.peluang_beracun*100)|round(1)|string|replace('.', ',') }}%</span>
+          </div>
+        </div>
+
+        <div class="kartu p-3 mb-3">
+          <h2 class="text-uppercase mb-2">Jalur keputusan pohon</h2>
+          <p class="small text-secondary mb-2">Pohon menanyakan pertanyaan berikut, berurutan dari akar sampai daun:</p>
+          <ol class="jalur ps-3 mb-2">
+            {% for langkah in hasil.jalur %}<li>{{ langkah }}</li>{% endfor %}
+          </ol>
+          <p class="small text-secondary mb-0">Daun ini berisi {{ hasil.sampel_daun }} sampel latih. Prediksi: <strong>{{ hasil.label }}</strong>.</p>
+          {% if hasil.stalk_root_diimputasi %}
+          <p class="small mt-2 mb-0" style="color:#c9a227">Pangkal batang "Tidak diketahui" diisi otomatis dengan nilai terbanyak di data latih (membulat), sama seperti saat pelatihan.</p>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="kartu p-3 mb-3">
+          <h2 class="text-uppercase mb-2">Hasil klasifikasi</h2>
+          <p class="small text-secondary mb-0">Pilih ciri fisik jamur pada formulir, atau pakai tombol contoh, lalu tekan <strong>Klasifikasikan jamur</strong>. Hasil dan jalur keputusan pohon akan tampil di sini.</p>
+        </div>
+        {% endif %}
+
+        <div class="kartu p-3 mb-3">
+          <h2 class="text-uppercase mb-2">Tentang model</h2>
+          <ul class="small text-secondary ps-3 mb-0">
+            <li>Dataset UCI Mushroom: {{ "{:,}".format(metrik.n_total).replace(",", ".") }} sampel, 21 fitur kategorikal.</li>
+            <li>Akurasi data uji: Model A {{ (metrik.model_a.acc_test*100)|round(2)|string|replace('.', ',') }}%, Model B {{ (metrik.model_b.acc_test*100)|round(2)|string|replace('.', ',') }}%.</li>
+            <li>Model bisa dibaca sebagai aturan jika-maka (white box).</li>
+          </ul>
+        </div>
+
+        <div class="alert alert-warning small mb-0" role="note">
+          <strong>Hanya untuk belajar.</strong> Jangan jadikan hasil ini dasar memutuskan apakah jamur aman dimakan. Kesalahan identifikasi jamur dapat berakibat fatal.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const CONTOH = {{ contoh|tojson }};
+  function isi(data) {
+    for (const [nama, nilai] of Object.entries(data)) {
+      const el = document.querySelector('[name="' + nama + '"]');
+      if (el) el.value = nilai;
+    }
+  }
+  function kosongkan() { document.querySelectorAll('#form-jamur select').forEach(s => s.selectedIndex = 0); }
+  {% if hasil %}document.getElementById('hasil').scrollIntoView({block: 'nearest'});{% endif %}
+</script>
+</body>
+</html>
